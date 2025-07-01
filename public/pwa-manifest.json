@@ -1,0 +1,60 @@
+{
+  "name": "ProteinScan - Nutrition Scanner",
+  "short_name": "ProteinScan",
+  "description": "Scan and analyze protein products instantly with barcode scanning and ingredient analysis",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "categories": ["health", "nutrition", "food"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Scan Barcode",
+      "short_name": "Scan",
+      "description": "Quickly scan a protein product barcode",
+      "url": "/?action=scan",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Search Products",
+      "short_name": "Search",
+      "description": "Search for protein products by name",
+      "url": "/?action=search",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "prefer_related_applications": false
+}
