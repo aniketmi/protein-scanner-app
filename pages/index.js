@@ -1,9 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Camera, Search, Shield, AlertTriangle, CheckCircle, History, Zap } from 'lucide-react';
 
-import React, { useState, useRef, useCallback } from 'react';
-import { Camera, Search, Shield, AlertTriangle, CheckCircle, Star, History, Zap } from 'lucide-react';
-
 const ProteinScannerApp = () => {
   const [currentView, setCurrentView] = useState('home');
   const [scanResult, setScanResult] = useState(null);
