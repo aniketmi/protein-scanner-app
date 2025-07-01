@@ -324,8 +324,6 @@ const ProteinScannerApp = () => {
   return null;
 };
 
-export default ProteinScannerApp;
-
 export default function Home() {
   return <ProteinScannerApp />;
 }
