@@ -7,6 +7,7 @@ A barcode scanner app for analyzing protein products, similar to Yuka but focuse
 - Ingredient analysis
 - 1-100 scoring system
 - Web-based, mobile-friendly
+- date 1st July 2025
 
 ## Live Demo
 [Add your Vercel URL here after deployment]
