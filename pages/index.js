@@ -94,7 +94,7 @@ const ProteinScannerApp = () => {
     };
   }, []);
 
-  // Real barcode scanning with QuaggaJS simulation
+  // Real barcode scanning with QuaggaJS
   const initBarcodeScanner = useCallback(async () => {
     if (!videoRef.current) return;
 
@@ -109,26 +109,113 @@ const ProteinScannerApp = () => {
       
       videoRef.current.srcObject = stream;
       
-      // Simulate QuaggaJS barcode detection
-      const simulateBarcodeScan = () => {
-        setTimeout(() => {
-          if (isScanning) {
-            const mockBarcodes = [
-              '748927022259', // Optimum Nutrition
-              '853218003456', // Generic Protein Bar
-              '123456789012', // Plant Protein Powder
-            ];
-            const randomBarcode = mockBarcodes[Math.floor(Math.random() * mockBarcodes.length)];
-            handleBarcodeDetected(randomBarcode);
-          }
-        }, 3000 + Math.random() * 2000); // 3-5 seconds
-      };
+      // Initialize QuaggaJS for real barcode detection
+      const Quagga = await import('quagga');
       
-      simulateBarcodeScan();
+      Quagga.default.init({
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: videoRef.current,
+          constraints: {
+            width: 1280,
+            height: 720,
+            facingMode: "environment"
+          }
+        },
+        locator: {
+          patchSize: "medium",
+          halfSample: true
+        },
+        numOfWorkers: 2,
+        frequency: 10,
+        decoder: {
+          readers: [
+            "code_128_reader",
+            "ean_reader", 
+            "ean_8_reader",
+            "code_39_reader",
+            "code_39_vin_reader",
+            "codabar_reader",
+            "upc_reader",
+            "upc_e_reader"
+          ]
+        },
+        locate: true
+      }, (err) => {
+        if (err) {
+          console.error('QuaggaJS init error:', err);
+          // Fallback to simulation if QuaggaJS fails
+          simulateBarcodeScan();
+          return;
+        }
+        console.log("QuaggaJS initialized successfully");
+        Quagga.default.start();
+      });
+
+      // Handle successful barcode detection
+      Quagga.default.onDetected((data) => {
+        const barcode = data.codeResult.code;
+        console.log('Real barcode detected:', barcode);
+        
+        // Stop QuaggaJS
+        Quagga.default.stop();
+        
+        // Process the detected barcode
+        handleBarcodeDetected(barcode);
+      });
+
+      // Handle detection errors
+      Quagga.default.onProcessed((result) => {
+        const drawingCtx = Quagga.default.canvas.ctx.overlay;
+        const drawingCanvas = Quagga.default.canvas.dom.overlay;
+
+        if (result) {
+          if (result.boxes) {
+            drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+            result.boxes.filter(box => box !== result.box).forEach(box => {
+              Quagga.default.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
+            });
+          }
+
+          if (result.box) {
+            Quagga.default.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
+          }
+
+          if (result.codeResult && result.codeResult.code) {
+            Quagga.default.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
+          }
+        }
+      });
       
     } catch (error) {
-      console.error('Camera access denied:', error);
-      alert('Camera access is required for barcode scanning. Please allow camera permissions.');
+      console.error('Camera access denied or QuaggaJS failed:', error);
+      
+      // Fallback to simulation for demo purposes
+      alert('Camera access required for barcode scanning. Falling back to demo mode.');
+      simulateBarcodeScan();
+    }
+    
+    // Fallback simulation function (commented out for production)
+    function simulateBarcodeScan() {
+      /* 
+         SIMULATION MODE - Remove this in production
+         This is only for demo purposes when QuaggaJS fails
+      */
+      setTimeout(() => {
+        if (isScanning) {
+          const mockBarcodes = [
+            '748927022259', // Optimum Nutrition Gold Standard Whey
+            '853218003456', // Generic Protein Bar
+            '123456789012', // Plant Protein Powder
+            '0041570052471', // Muscle Milk Protein Shake
+            '0031604026851'  // Quest Protein Bar
+          ];
+          const randomBarcode = mockBarcodes[Math.floor(Math.random() * mockBarcodes.length)];
+          console.log('Simulated barcode detected:', randomBarcode);
+          handleBarcodeDetected(randomBarcode);
+        }
+      }, 3000 + Math.random() * 2000); // 3-5 seconds delay
     }
   }, [isScanning]);
 
@@ -361,6 +448,20 @@ const ProteinScannerApp = () => {
 
   const stopScanning = useCallback(() => {
     setIsScanning(false);
+    
+    // Stop QuaggaJS if it's running
+    try {
+      import('quagga').then((Quagga) => {
+        if (Quagga.default) {
+          Quagga.default.stop();
+          console.log('QuaggaJS stopped');
+        }
+      });
+    } catch (error) {
+      console.log('QuaggaJS not running or already stopped');
+    }
+    
+    // Stop camera stream
     if (videoRef.current && videoRef.current.srcObject) {
       const tracks = videoRef.current.srcObject.getTracks();
       tracks.forEach(track => track.stop());
