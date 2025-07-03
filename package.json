@@ -12,7 +12,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "next": "14.0.0",
-    "lucide-react": "^0.263.1"
+    "lucide-react": "^0.263.1",
+    "quagga": "^0.12.1"
   },
   "engines": {
     "node": ">=18.0.0"
