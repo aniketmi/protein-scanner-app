@@ -110,7 +110,7 @@ const ProteinScannerApp = () => {
       videoRef.current.srcObject = stream;
       
       // Initialize QuaggaJS for real barcode detection
-      const Quagga = await import('quagga');
+      const Quagga = await import('@ericblade/quagga2');
       
       Quagga.default.init({
         inputStream: {
