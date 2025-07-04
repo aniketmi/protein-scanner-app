@@ -451,7 +451,7 @@ const ProteinScannerApp = () => {
     
     // Stop QuaggaJS if it's running
     try {
-      import('quagga').then((Quagga) => {
+      import('@ericblade/quagga2').then((Quagga) => {
         if (Quagga.default) {
           Quagga.default.stop();
           console.log('QuaggaJS stopped');
