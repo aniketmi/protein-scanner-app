@@ -125,7 +125,7 @@ export default function Document() {
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js')
+                  navigator.serviceWorker.register('/service-worker.js')
                     .then(function(registration) {
                       console.log('SW registered: ', registration);
                     })
