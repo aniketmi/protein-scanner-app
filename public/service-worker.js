@@ -168,10 +168,10 @@ async function handleOtherRequests(request) {
     return networkResponse;
   } catch (error) {
     // Return a basic offline response for failed requests
-    return new Response('Offline: Resource not available', {
-      status: 503,
-      statusText: 'Service Unavailable'
-    });
+    if (request.destination === 'image') {
+ 	 return await cache.match('/icon-192.png');
+	}
+    return await cache.match(OFFLINE_URL);
   }
 }
 
