@@ -12,7 +12,7 @@ export default function Document() {
         {/* PWA Primary Meta Tags */}
         <meta name="theme-color" content="#3b82f6" />
         <meta name="background-color" content="#ffffff" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/pwa-manifest.json" />
         
         {/* Favicon Links */}
         <link rel="icon" href="/favicon.ico" />
